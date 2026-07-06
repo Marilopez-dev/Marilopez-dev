@@ -18,7 +18,7 @@ jobs:
 
       # 1. Generar la tarjeta de estadísticas generales
       - name: Generate Overview Stats
-        uses: stats-organization/github-readme-stats-action@master
+        uses: stats-organization/github-readme-stats-action@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           card: stats
