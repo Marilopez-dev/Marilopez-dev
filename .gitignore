@@ -1,0 +1,7 @@
+# Ignorar archivos del sistema operativo
+.DS_Store
+Thumbs.db
+
+# Ignorar carpetas de configuración de IDEs (opcional)
+.idea/
+.vscode/
