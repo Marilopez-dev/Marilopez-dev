@@ -2,32 +2,44 @@ name: Generate GitHub Stats
 
 on:
   schedule:
-    # Se ejecuta cada 4 horas
     - cron: '0 */1 * * *'
-  workflow_dispatch: # Permite ejecución manual
+  workflow_dispatch:
 
 jobs:
   update-stats:
     runs-on: ubuntu-latest
+    
     permissions:
       contents: write
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Generate Stats Images
-        uses: stats-organization/github-stats-extended@master
+      # 1. Generar la tarjeta de estadísticas generales
+      - name: Generate Overview Stats
+        uses: stats-organization/github-readme-stats-action@master
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          # Opciones de personalización:
-          theme: 'dark' # Temas disponibles: dark, light, radical, tokyonight, etc.
-          count_private: true
-          show_icons: true
+          card: stats
+          path: generated/overview.svg
+          options: theme=radical&show_icons=true&count_private=true
 
+      # 2. Generar la tarjeta de lenguajes más usados
+      - name: Generate Top Languages
+        uses: stats-organization/github-readme-stats-action@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          card: top-langs
+          path: generated/languages.svg
+          options: theme=radical&layout=compact&count_private=true
+
+      # 3. Guardar los cambios e impactar en el repositorio
       - name: Commit and Push Changes
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p generated
           git add generated/
           git commit -m "chore: update github stats [skip ci]" || exit 0
-          git push
+          git push origin main
